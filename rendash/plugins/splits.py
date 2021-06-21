@@ -76,6 +76,9 @@ class HorizontalSplit(Splitter):
                 if rect.collidepoint(event.pos):
                     event.pos = (event.pos[0] - rect.left, event.pos[1] - rect.top)
                     portion.on_event(event)
+        else:
+            for (portion, _) in portion_rects:
+                portion.on_event(event)
 
 class VerticalSplit(Splitter):
     def render(self, surface: Surface, clock: Clock):
@@ -114,3 +117,6 @@ class VerticalSplit(Splitter):
                 if rect.collidepoint(event.pos):
                     event.pos = (event.pos[0] - rect.left, event.pos[1] - rect.top)
                     portion.on_event(event)
+        else:
+            for (portion, _) in portion_rects:
+                portion.on_event(event)
