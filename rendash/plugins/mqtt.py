@@ -101,3 +101,48 @@ class MQTTBoolDisplay(BoolDisplay):
                 self.value = True
             else:
                 self.value = None
+
+class MQTTButton(Button):
+    def __init__(
+        self,
+        mqtt_topic: str,
+        mqtt_message: str,
+        text: str = "Tap to alert",
+        font: Font = None,
+        color_bg: Color = None,
+        color_fg: Color = None,
+        center: bool = True,
+        padding: int = 8,
+    ):
+        """Button that pushes a defined message to an MQTT topic when clicked.
+
+        ``mqtt_topic`` is the topic to push to, ``mqtt_message`` is the message to push.
+
+        Other parameters are the same as ``rendash.plugins.basics.Button``
+        """
+
+        super(MQTTButton, self).__init__(
+            text,
+            self.on_click,
+            font,
+            color_bg,
+            color_fg,
+            center,
+            padding,
+        )
+
+        self.mqtt_topic = mqtt_topic
+        self.mqtt_message = mqtt_message
+
+    def before_start(self):
+        super(MQTTButton, self).before_start()
+        current_config.mqtt_client.message_callback_add(self.mqtt_topic, self.mqtt_callback)
+        current_config.mqtt_client.subscribe(self.mqtt_topic)
+
+    def mqtt_callback(self, mqtt_client, mqtt_userdata, mqtt_message):
+        if mqtt_message.topic == self.mqtt_topic:
+            # do something?
+            pass
+
+    def on_click(self, event):
+        current_config.mqtt_client.publish(self.mqtt_topic, self.mqtt_message)

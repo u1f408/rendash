@@ -142,3 +142,53 @@ class BoolDisplay(BasePlugin):
             text = " ".join(text)
 
         draw_text(text, surface, draw_rect, self.font, self.color_fg, center=self.center)
+
+class Button(TextDisplay):
+    def __init__(
+        self,
+        text: str,
+        on_click = None,
+        font: Font = None,
+        color_bg: Color = None,
+        color_fg: Color = None,
+        center: bool = True,
+        padding: int = 8,
+    ):
+        """A button that calls a function when clicked.
+
+        The ``color_bg`` and ``color_fg`` parameters are reversed while the
+        button is held down.
+
+        The ``on_click`` parameter is the function to call, which is passed
+        the pygame MOUSEBUTTONUP event as it's only parameter.
+
+        All other parameters are the same as ``TextDisplay``.
+        """
+
+        super(Button, self).__init__(
+            text,
+            font,
+            color_bg,
+            color_fg,
+            center,
+            padding,
+        )
+
+        self.callback = on_click or (lambda _: None)
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {repr(self.text)} {repr(self.callback)}>"
+    
+    def before_start(self):
+        super(Button, self).before_start()
+        self._color_bg = self.color_bg
+        self._color_fg = self.color_fg
+
+    def on_event(self, event: Event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            (self.color_bg, self.color_fg) = (self._color_fg, self._color_bg)
+
+        elif event.type == pygame.MOUSEBUTTONUP:
+            (self.color_bg, self.color_fg) = (self._color_bg, self._color_fg)
+            self.callback(event)
+
