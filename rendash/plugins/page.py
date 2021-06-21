@@ -60,19 +60,26 @@ class PageNavigation(BubbleBase):
 
 
 class Paginator(BubbleBase):
-    def __init__(self, pages, size: tuple = (1, 10)):
+    def __init__(
+        self,
+        pages,
+        size: tuple = (1, 10),
+        show_pagination: bool = True,
+    ):
         self.size = size
+        self.show_pagination = show_pagination
         self.current_page = 0
         self.pages = pages
-        self.inner = VerticalSplit([
-            (self.size[0], PageNavigation(self)),
-        ])
+
+        self.inner = VerticalSplit([])
+        if self.show_pagination:
+            self.inner.portions.insert(0, (self.size[0], PageNavigation(self)))
 
     def __repr__(self):
-        return f"<{self.__class__.__name__} current_page={repr(self.current_page)} pages={repr(self.pages)}>"
+        return f"<{self.__class__.__name__} current_page={repr(self.current_page)} pages={len(self.pages)}>"
     
     def page_update(self):
-        while len(self.inner.portions) > 1:
+        while len(self.inner.portions) > (1 if self.show_pagination else 0):
             self.inner.portions.pop()
 
         self.inner.portions.append((self.size[1], self.pages[self.current_page]))
@@ -99,10 +106,9 @@ class Paginator(BubbleBase):
             page.before_start()
 
     def after_stop(self):
-        while len(self.inner.portions) > 1:
+        while len(self.inner.portions) > (1 if self.show_pagination else 0):
             self.inner.portions.pop()
 
         super(Paginator, self).after_stop()
         for page in self.pages:
             page.after_stop()
-
