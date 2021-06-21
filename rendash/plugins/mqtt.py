@@ -1,5 +1,6 @@
 from rendash.config import current_config
 from rendash.plugins.basics import TextDisplay, BoolDisplay, Button
+from rendash.plugins.page import Paginator
 
 from pygame import Surface, Rect, Color
 from pygame.font import Font
@@ -146,3 +147,40 @@ class MQTTButton(Button):
 
     def on_click(self, event):
         current_config.mqtt_client.publish(self.mqtt_topic, self.mqtt_message)
+
+class MQTTPaginator(Paginator):
+    def __init__(
+        self,
+        mqtt_topic: str,
+        pages,
+        size: tuple = (1, 10),
+    ):
+        """A pagination widget where the selected page is determined by the
+        value of an MQTT topic.
+
+        ``mqtt_topic`` is the name of the topic to use for page selection.
+
+        All other parameters are the same as ``rendash.plugins.page.Paginator``.
+        """
+
+        super(MQTTPaginator, self).__init__(
+            pages,
+            size, 
+            show_pagination=False,
+        )
+
+        self.mqtt_topic = mqtt_topic
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} mqtt_topic={repr(self.mqtt_topic)} current_page={repr(self.current_page)} pages={len(self.pages)}>"
+
+    def before_start(self):
+        super(MQTTPaginator, self).before_start()
+        current_config.mqtt_client.message_callback_add(self.mqtt_topic, self.mqtt_callback)
+        current_config.mqtt_client.subscribe(self.mqtt_topic)
+
+    def mqtt_callback(self, mqtt_client, mqtt_userdata, mqtt_message):
+        if mqtt_message.topic == self.mqtt_topic:
+            self.current_page = int(mqtt_message.payload) % len(self.pages)
+            self.page_update()
+
