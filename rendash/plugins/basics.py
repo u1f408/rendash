@@ -1,12 +1,14 @@
+from typing import Union
+
 from rendash.plugins import BasePlugin
 from rendash.config import current_config
 from rendash.utils.text import draw_text
 
-from typing import Union
+import pygame
 from pygame import Surface, Rect, Color
 from pygame.font import Font
 from pygame.time import Clock
-
+from pygame.event import Event
 
 
 class TextDisplay(BasePlugin):
@@ -26,11 +28,19 @@ class TextDisplay(BasePlugin):
         """
 
         self.text = text
-        self.font = font or current_config.font
-        self.color_bg = color_bg or current_config.color_bg
-        self.color_fg = color_fg or current_config.color_fg
+        self.font = font
+        self.color_bg = color_bg
+        self.color_fg = color_fg
         self.center = center
         self.padding = padding
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {repr(self.text)}>"
+    
+    def before_start(self):
+        self.font = self.font or current_config.font
+        self.color_bg = self.color_bg or current_config.color_bg
+        self.color_fg = self.color_fg or current_config.color_fg
 
     def render(self, surface: Surface, clock: Clock):
         surface.fill(self.color_bg)
@@ -87,17 +97,27 @@ class BoolDisplay(BasePlugin):
 
         self.value = value
         self.prefix = prefix
-        self.font = font or current_config.font
+        self.font = font
         self.text_true = text_true
         self.text_false = text_false
         self.text_none = text_none
-        self.color_bg_true = color_bg_true or current_config.color_bg
-        self.color_bg_false = color_bg_false or current_config.color_bg
-        self.color_bg_none = color_bg_none or current_config.color_bg
-        self.color_fg = color_fg or current_config.color_fg
+        self.color_bg_true = color_bg_true
+        self.color_bg_false = color_bg_false
+        self.color_bg_none = color_bg_none
+        self.color_fg = color_fg
         self.multi_line = multi_line
         self.center = center
         self.padding = padding
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {repr(self.value)}>"
+
+    def before_start(self):
+        self.font = self.font or current_config.font
+        self.color_bg_true = self.color_bg_true or current_config.color_bg
+        self.color_bg_false = self.color_bg_false or current_config.color_bg
+        self.color_bg_none = self.color_bg_none or current_config.color_bg
+        self.color_fg = self.color_fg or current_config.color_fg
 
     def render(self, surface: Surface, clock: Clock):
         if self.value == True:

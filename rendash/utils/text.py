@@ -46,8 +46,8 @@ def draw_text(text: str, surface: Surface, rect: Rect, font: Font, color: Color,
     if not isinstance(text, list):
         text = wrap_text(text, font, rect.width)
 
-    printable_lines = 0
-    for i in range(0, len(text)):
+    printable_lines = 1
+    for i in range(1, len(text)):
         if ((font_height + line_spacing) * (i + 1)) <= rect.height:
             printable_lines += 1
 

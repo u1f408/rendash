@@ -1,5 +1,5 @@
 from rendash.config import current_config
-from rendash.plugins.basics import TextDisplay, BoolDisplay
+from rendash.plugins.basics import TextDisplay, BoolDisplay, Button
 
 from pygame import Surface, Rect, Color
 from pygame.font import Font
@@ -33,6 +33,7 @@ class MQTTTextDisplay(TextDisplay):
         self.topic = topic
 
     def before_start(self):
+        super(MQTTTextDisplay, self).before_start()
         current_config.mqtt_client.message_callback_add(self.topic, self.mqtt_callback)
         current_config.mqtt_client.subscribe(self.topic)
 
@@ -86,6 +87,7 @@ class MQTTBoolDisplay(BoolDisplay):
         self.topic = topic
 
     def before_start(self):
+        super(MQTTBoolDisplay, self).before_start()
         current_config.mqtt_client.message_callback_add(self.topic, self.mqtt_callback)
         current_config.mqtt_client.subscribe(self.topic)
 

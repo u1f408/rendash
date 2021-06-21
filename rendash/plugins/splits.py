@@ -11,12 +11,15 @@ from pygame.event import Event
 
 class Splitter(BasePlugin):
     def __init__(self, portions, padding: int = 8):
-        self.padding = 8
+        self.padding = padding
         self.portions = []
         for portion in portions:
             if not isinstance(portion, tuple):
                 portion = (1, portion,)
             self.portions.append(portion)
+    
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {repr(self.portions)}>"
 
     def _split(self, screen_size: int) -> list[tuple[int, Any]]:
         portions = []
@@ -52,6 +55,7 @@ class HorizontalSplit(Splitter):
             # get the rect containing this portion, and a surface to contain it
             rect = Rect(x, self.padding, size, self._last_surface_height - (self.padding * 2))
             portion_surface = Surface((rect.width, rect.height))
+            portion_surface.fill(current_config.color_bg)
 
             # render the portion
             portion.render(portion_surface, clock)
@@ -93,6 +97,7 @@ class VerticalSplit(Splitter):
             # get the rect containing this portion, and a surface to contain it
             rect = Rect(self.padding, y, self._last_surface_width - (self.padding * 2), size)
             portion_surface = Surface((rect.width, rect.height))
+            portion_surface.fill(current_config.color_bg)
 
             # render the portion
             portion.render(portion_surface, clock)
