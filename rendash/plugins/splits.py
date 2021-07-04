@@ -21,7 +21,7 @@ class Splitter(BasePlugin):
     def __repr__(self):
         return f"<{self.__class__.__name__} {repr(self.portions)}>"
 
-    def _split(self, screen_size: int) -> list[tuple[int, Any]]:
+    def _split(self, screen_size: int) -> list:
         portions = []
 
         total_size = sum(map(lambda x: x[0], self.portions))

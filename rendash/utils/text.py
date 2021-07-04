@@ -2,7 +2,7 @@ from pygame import Surface, Rect, Color
 from pygame.font import Font
 
 
-def wrap_text(text: str, font: Font, width: int) -> list[str]:
+def wrap_text(text: str, font: Font, width: int) -> list:
     """Wrap `text` by word, to `width`, using the given `font`.
 
     Returns a `list[str]` of the wrapped lines.
@@ -28,7 +28,7 @@ def wrap_text(text: str, font: Font, width: int) -> list[str]:
     return lines
 
 
-def draw_text(text: str, surface: Surface, rect: Rect, font: Font, color: Color, line_spacing: int = -2, center: bool = True) -> list[str]:
+def draw_text(text: str, surface: Surface, rect: Rect, font: Font, color: Color, line_spacing: int = -2, center: bool = True) -> list:
     """Draw the `text` to the given `surface`, within the bounds of the given
     `rect`, in the given `font` and `color`, line-wrapping the `text` by word.
 

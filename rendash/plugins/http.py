@@ -15,7 +15,7 @@ class HTTPTextDisplay(TextDisplay):
     def __init__(
         self,
         url: str,
-        parser: Callable[..., str],
+        parser: Callable,
         cache_timeout: int = 300,
         font: Font = None,
         color_bg: Color = None,
@@ -60,7 +60,7 @@ class HTTPBoolDisplay(BoolDisplay):
         self,
         prefix: str,
         url: str,
-        parser: Callable[..., bool],
+        parser: Callable,
         cache_timeout: int = 300,
         font: Font = None,
         text_true: str = "YES",

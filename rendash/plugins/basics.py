@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any
 
 from rendash.plugins import BasePlugin
 from rendash.config import current_config
@@ -58,7 +58,7 @@ class TextDisplay(BasePlugin):
 class BoolDisplay(BasePlugin):
     def __init__(
         self,
-        value: Union[bool, None],
+        value: Any, # Union[bool, None]
         prefix: str,
         font: Font = None,
         text_true: str = "YES",
